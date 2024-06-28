@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { OrderMoviePayload, extractTime } from './dto/order-movie.dto';
 import { readToFile, writeToFile } from './utils/readWriteToFiles';
 import { AxiosResponse } from 'axios';
+import { choiceRandUA } from './utils/randomUA';
 
 @Injectable()
 export class AppService {
@@ -66,13 +67,23 @@ export class AppService {
     const idx = await this.getRandIndexUsers(users.length - 1)
     const userData = users[(idx > users.length) ? users.length : idx]
 
-    return (await firstValueFrom(this.httpService.post<LoginResponse>(process.env.REMOTE_BASE_URL + '/auth/signin', userData))).data
+    return (await firstValueFrom(this.httpService.post<LoginResponse>(process.env.REMOTE_BASE_URL + '/auth/signin', userData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
+      }
+    }))).data
   }
 
   private async loginAdmin(){
     const admin = await readToFile<UserModel>('users')
 
-    return (await firstValueFrom(this.httpService.post<LoginResponse>(process.env.REMOTE_BASE_URL + '/auth/signin', admin[0]))).data
+    return (await firstValueFrom(this.httpService.post<LoginResponse>(process.env.REMOTE_BASE_URL + '/auth/signin', admin[0], {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
+      }
+    }))).data
   }
 
   private async fetchAllMovies(acc_token: string){
@@ -86,7 +97,8 @@ export class AppService {
   async getHome(){
     return await firstValueFrom(this.httpService.get<{ message: string }>(process.env.REMOTE_BASE_URL, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -102,7 +114,12 @@ export class AppService {
 
     writeToFile('users', JSON.stringify(payload))
 
-    return await firstValueFrom(this.httpService.post(process.env.REMOTE_BASE_URL + '/auth/signup', payload))
+    return await firstValueFrom(this.httpService.post(process.env.REMOTE_BASE_URL + '/auth/signup', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
+      }
+    }))
   }
 
   async insertMovies(){
@@ -113,7 +130,9 @@ export class AppService {
     const payload = await this.getRandMovies()
     return await firstValueFrom(this.httpService.post(process.env.REMOTE_BASE_URL + '/movies/insertMovies', payload, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }));
   }
@@ -132,10 +151,13 @@ export class AppService {
     };
     
     const movieTitle = await getRandMoviesTitle()
+    console.log('title: ', movieTitle)
 
     return await firstValueFrom(this.httpService.get<GetMovieByTitleResponse>(process.env.REMOTE_BASE_URL + `/movies/searchMovies/${movieTitle}`, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -155,7 +177,9 @@ export class AppService {
 
     return await firstValueFrom(this.httpService.patch(process.env.REMOTE_BASE_URL + '/movies/updateMovies', updatePayload, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -181,7 +205,9 @@ export class AppService {
     return await firstValueFrom(this.httpService.delete(process.env.REMOTE_BASE_URL + '/movies/removeMovies', {
       data: deletedMovies,
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -218,7 +244,9 @@ export class AppService {
       insertNewOpenedMoviesPayload, 
       {
         headers: {
-          Authorization: `Bearer ${loginRes.acc_token}`
+          Authorization: `Bearer ${loginRes.acc_token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': choiceRandUA()
         }
       }
     ))
@@ -232,7 +260,9 @@ export class AppService {
 
     return await firstValueFrom(this.httpService.get<FetchedOpenedMoviesResponse>(process.env.REMOTE_BASE_URL + '/openList/fetchOpenedMovies', {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -269,7 +299,9 @@ export class AppService {
 
     return await firstValueFrom(this.httpService.post(process.env.REMOTE_BASE_URL + '/orderMovie/createNewOrder', payload, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
@@ -284,12 +316,14 @@ export class AppService {
 
     return await firstValueFrom(this.httpService.get<viewOrderHistoryResponse>(process.env.REMOTE_BASE_URL + `/orderMovie/viewOrderHistory?name=${username}`, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }
 
-  async deleteOrderHistory(role: string = 'user'): Promise<AxiosResponse<any, any> | null>{
+  async deleteOrderHistory(role: string = 'user'): Promise<AxiosResponse<any, any> | Promise<string>>{
     let loginRes: LoginResponse
 
     if(role === 'user') loginRes = await this.loginUser();
@@ -297,16 +331,17 @@ export class AppService {
 
     const username = (await this.jwtService.verifyAsync<TokenPayload>(loginRes.acc_token, { secret: process.env.SECRET_KEY_USER })).username;
     const viw_open_movie = (await this.viewOrderHistory()).data.data
-    console.log(typeof viw_open_movie)
 
-    if(typeof viw_open_movie === 'string') return null
+    if(typeof viw_open_movie === 'string') return viw_open_movie
 
     const randIdx = Math.floor(Math.random() * viw_open_movie.length)
     const title = viw_open_movie[randIdx].movie_details.title
 
     return await firstValueFrom(this.httpService.delete(process.env.REMOTE_BASE_URL + `/orderMovie/deleteOrder?name=${username}&title=${title}`, {
       headers: {
-        Authorization: `Bearer ${loginRes.acc_token}`
+        Authorization: `Bearer ${loginRes.acc_token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': choiceRandUA()
       }
     }))
   }

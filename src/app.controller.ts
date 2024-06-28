@@ -13,130 +13,133 @@ export class AppController {
       try {
         const res = await this.appService.deleteOrderHistory()
 
-        return res?.data || 'data null'
+        return res
       } catch (error) {
         console.error(error)
       }
     }
-    // @Cron(CronExpression.EVERY_30_MINUTES)
-    // async registeringUser(){
-    //   const res = await this.appService.registerUser()
+    @Cron(CronExpression.EVERY_30_MINUTES)
+    async registeringUser(){
+      const res = await this.appService.registerUser()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on register user')
-    //   }
-    //   console.log('registering user succed')
-    // }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on register user')
+      }
+      console.log('registering user succed')
+    }
     
-    // @Cron(CronExpression.EVERY_6_HOURS)
-    // async insertingMovies(){
-    //   const res = await this.appService.insertMovies()
+    @Cron(CronExpression.EVERY_6_HOURS)
+    async insertingMovies(){
+      const res = await this.appService.insertMovies()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on inserting movies')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on inserting movies')
+      }
 
-    //   console.log('inserting movies succeed')
-    // }
+      console.log('inserting movies succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_5_MINUTES)
-    // async findMovieByTitleUser(){
-    //   // find movies from user
-    //   const resUser = await this.appService.searchMoviesByTitle('user')
+    @Cron(CronExpression.EVERY_5_MINUTES)
+    async findMovieByTitleUser(){
+      // find movies from user
+      const resUser = await this.appService.searchMoviesByTitle('user')
 
-    //   if(resUser.status !== HttpStatus.OK){
-    //     console.log('failed on find movies by title from user')
-    //   }
+      if(resUser.status !== HttpStatus.OK){
+        console.log('failed on find movies by title from user')
+      }
 
-    //   console.log('finding movies by title from user succeed')
-    // }
+      console.log('finding movies by title from user succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_5_MINUTES)
-    // async findMovieByTitleAdmin(){
-    //   // find movies from user
-    //   const resAdmin = await this.appService.searchMoviesByTitle('user')
+    @Cron(CronExpression.EVERY_5_MINUTES)
+    async findMovieByTitleAdmin(){
+      // find movies from user
+      const resAdmin = await this.appService.searchMoviesByTitle('user')
 
-    //   if(resAdmin.status !== HttpStatus.OK){
-    //     console.log('failed on find movies by title from admin')
-    //   }
+      if(resAdmin.status !== HttpStatus.OK){
+        console.log('failed on find movies by title from admin')
+      }
 
-    //   console.log('finding movies by title from admin succeed')
-    // }
+      console.log('finding movies by title from admin succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_6_HOURS)
-    // async updatingMovies(){
-    //   const res = await this.appService.updateMovies()
+    @Cron(CronExpression.EVERY_6_HOURS)
+    async updatingMovies(){
+      const res = await this.appService.updateMovies()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on updating movies')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on updating movies')
+      }
 
-    //   console.log('updating movies succeed')
-    // }
+      console.log('updating movies succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_6_HOURS)
-    // async removingMovies(){
-    //   const res = await this.appService.removeMovies()
+    @Cron(CronExpression.EVERY_6_HOURS)
+    async removingMovies(){
+      const res = await this.appService.removeMovies()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on removing movies')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on removing movies')
+      }
 
-    //   console.log('removing movies succeed')
-    // }
+      console.log('removing movies succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_6_HOURS)
-    // async insertingOpenedMovies(){
-    //   const res = await this.appService.insertOpenedMovies()
+    @Cron(CronExpression.EVERY_6_HOURS)
+    async insertingOpenedMovies(){
+      const res = await this.appService.insertOpenedMovies()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on inserting opened movies')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on inserting opened movies')
+      }
 
-    //   console.log('inserting opened movies succeed')
-    // }
+      console.log('inserting opened movies succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_5_MINUTES)
-    // async fetchingOpenedMovies(){
-    //   const res = await this.appService.fetchOpenedMovies()
+    @Cron(CronExpression.EVERY_5_MINUTES)
+    async fetchingOpenedMovies(){
+      const res = await this.appService.fetchOpenedMovies()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on fetching opened movies')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on fetching opened movies')
+      }
 
-    //   console.log('fetching opened movies succeed')
-    // }
+      console.log('fetching opened movies succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_HOUR)
-    // async creatingOrderMovie(){
-    //   const res = await this.appService.createOrderMovie()
+    @Cron(CronExpression.EVERY_HOUR)
+    async creatingOrderMovie(){
+      const res = await this.appService.createOrderMovie()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on creating order movie')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on creating order movie')
+      }
 
-    //   console.log('creating order movie succeed')
-    // }
+      console.log('creating order movie succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_5_MINUTES)
-    // async viewingOrderHistory(){
-    //   const res = await this.appService.viewOrderHistory()
+    @Cron(CronExpression.EVERY_5_MINUTES)
+    async viewingOrderHistory(){
+      const res = await this.appService.viewOrderHistory()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on viewing order history')
-    //   }
+      if(res.status !== HttpStatus.OK){
+        console.log('failed on viewing order history')
+      }
 
-    //   console.log('viewing order history succeed')
-    // }
+      console.log('viewing order history succeed')
+    }
 
-    // @Cron(CronExpression.EVERY_HOUR)
-    // async deletingOrderHistory(){
-    //   const res = await this.appService.deleteOrderHistory()
+    @Cron(CronExpression.EVERY_HOUR)
+    async deletingOrderHistory(){
+      const res = await this.appService.deleteOrderHistory()
 
-    //   if(res.status !== HttpStatus.OK){
-    //     console.log('failed on deleting order history')
-    //   }
+      if(typeof res === 'string'){
+        console.log(res)
+      }
+      if(typeof res === 'object' && res.status !== HttpStatus.OK){
+        console.log('failed on deleting order history')
+      }
 
-    //   console.log('deleting order history succeed')
-    // }
+      console.log('deleting order history succeed')
+    }
 }
